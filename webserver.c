@@ -35,8 +35,16 @@ void *handle_client(void *client_socket){
     } else if (strncmp(buffer, status, strlen(status)) == 0){
 
     } else if (strncmp(buffer, status, strlen(calc)) == 0) {
+        int ax = 0, bx = 0;
+        if (sscanf(buffer, "GET /calc?a=%d&b=%d", &ax, &bx) == 2) {
+            int sum = ax + bx; 
+            char response[1024];
+            sprintf(response, "Sum of %d and %d is %d", ax, bx, sum); 
+            send(client_socket_desc, response, strlen(response), 0);
+        }
+    } else {
 
-    } else {}
+    }
 
 }
 
@@ -58,7 +66,7 @@ int main(int argc, char *argv[]){
     while (1){
         int client_socket = accept(socket_desc, NULL, NULL);
 
-        pthread thread_id; 
+        pthread_t thread_id; 
         pthread_create(&thread_id, NULL, handle_client, (void *)&client_socket);
     }
 }
